@@ -236,7 +236,8 @@
   const COLORS = {
     thinLine: "#cbd5e1",
     border: "#1e293b",
-    clueText: "#1e293b",
+    clueFill: "#4b5563",
+    clueText: "#ffffff",
     white: "#ffffff",
   };
 
@@ -456,7 +457,14 @@
       ctx.fillRect(PAD + c * CELL, PAD + r * CELL, CELL, CELL);
     }
 
-    // 3. 細いグリッド線(全マス境界)
+    // 3. 所与の数字マスの塗り(格子線が上に見えるよう線より先に描く)
+    ctx.fillStyle = COLORS.clueFill;
+    for (const key of clueMap.keys()) {
+      const [r, c] = parseCellKey(key);
+      ctx.fillRect(PAD + c * CELL, PAD + r * CELL, CELL, CELL);
+    }
+
+    // 4. 細いグリッド線(全マス境界)
     ctx.strokeStyle = COLORS.thinLine;
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -470,13 +478,13 @@
     }
     ctx.stroke();
 
-    // 4. 外周
+    // 5. 外周
     ctx.strokeStyle = COLORS.border;
     ctx.lineWidth = 4;
     ctx.lineJoin = "miter";
     ctx.strokeRect(PAD, PAD, cols * CELL, rows * CELL);
 
-    // 5. プレイヤーの線
+    // 6. プレイヤーの線
     ctx.lineWidth = 5;
     ctx.lineCap = "round";
     for (const [key, color] of state.lines) {
@@ -506,7 +514,7 @@
       }
     }
 
-    // 6. 所与の数字
+    // 7. 所与の数字
     ctx.fillStyle = COLORS.clueText;
     ctx.font = "bold " + Math.round(CELL * 0.6) + "px -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif";
     ctx.textAlign = "center";
